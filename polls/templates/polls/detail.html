@@ -1,5 +1,22 @@
+{% load static %}
 <h1>{{ question.question_text }}</h1>
-
+<style>
+    .button {
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+    
+    .button1 {background-color: #4CAF50;}
+    .button2 {background-color: #008CBA;} 
+    </style>
+<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
 
 <form action="{% url 'polls:vote' question.id %}" method="post">
@@ -10,3 +27,4 @@
 {% endfor %}
 <input type="submit" value="Vote">
 </form>
+<a href="{% url 'polls:index' %}"button class="button button1">Back to List of Polls</button></a>

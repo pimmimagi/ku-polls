@@ -1,4 +1,6 @@
 Web application for conducting online polls and surveys.
+[![Build Status](https://travis-ci.com/pimmimagi/ku-polls.svg?branch=master)](https://travis-ci.com/pimmimagi/ku-polls)
+[![codecov](https://codecov.io/gh/pimmimagi/ku-polls/branch/master/graph/badge.svg)](https://codecov.io/gh/pimmimagi/ku-polls)
 
 ## Project Documents
 

@@ -1,24 +1,14 @@
-{% load static %}
 <h1>{{ question.question_text }}</h1>
-<style>
-    .button {
-      border: none;
-      color: white;
-      padding: 15px 32px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-    }
-    
-    .button1 {background-color: #4CAF50;} /* Green */
-    .button2 {background-color: #008CBA;} /* Blue */
-    </style>
-<link rel="stylesheet" type="text/css" href="{% static 'polls/style.css' %}">
+ {% if messages %}
+    <ul class="messages">
+    {% for msg in messages %}
+        <strong class="{{msg.tags}}" >{{ msg }}</strong>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
 <ul>
-    <table width="20%">
+    <table width="30%">
 {% for choice in question.choice_set.all %}
         <tr>
             <td>{{ choice.choice_text }}</td>
@@ -28,5 +18,8 @@
     </table>
 </ul>
 
-<a href="{% url 'polls:detail' question.id %}"button class="button button2">Vote again?</a><br>
-<a href="{% url 'polls:index' %}"button class="button button1">Back to List of Polls</button></a>
+
+
+<form action="{% url 'polls:index'  %}">
+    <input type="submit" value="Go to home page" />
+</form>

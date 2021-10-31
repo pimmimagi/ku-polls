@@ -1,53 +1,49 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.views import generic
-from .models import Choice, Question
 from django.utils import timezone
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from .models import Choice, Question, Vote
+
 
 class IndexView(generic.ListView):
+    """Class for index view."""
+
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
 
     def get_queryset(self):
-        """
-        Return the last five published questions (not including those set to be
-        published in the future).
-        """
+        """To Return the last five published questions."""
         return Question.objects.filter(
             pub_date__lte=timezone.now()
         ).order_by('-pub_date')
 
-# def index(request):
-#     questions = Question.objects.all().order_by('-pub_date')
-#     return render(request, 'polls/index.html', {'questions': questions})
 
 class DetailView(generic.DetailView):
+    """Class for Deatil view."""
+
     model = Question
     template_name = 'polls/detail.html'
-    def get_queryset(self):
-        """
-        Excludes any questions that aren't published yet.
-        """
-        return Question.objects.filter(pub_date__lte=timezone.now())
 
-# def detail(request, pk):
-#     question = get_object_or_404(Question, pk=pk)
-#     if not question.can_vote():
-#         messages.info(request, 'Voting is not allowed!')
-#         return redirect('polls:index')
-#     else:
-#         return render(request, 'polls/detail.html', {'question': question})
+    def get_queryset(self):
+        """Excludes any questions that aren't published yet."""
+        return Question.objects.filter(pub_date__lte=timezone.now())
 
 
 class ResultsView(generic.DetailView):
+    """Class for results view."""
+
     model = Question
     template_name = 'polls/results.html'
 
-
+@login_required
 def vote(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
+    """To return vote function."""
+    question = get_object_or_404(Question,
+                                 pk=question_id)
     try:
         selected_choice = question.choice_set.get(pk=request.POST['choice'])
     except (KeyError, Choice.DoesNotExist):
@@ -57,10 +53,14 @@ def vote(request, question_id):
             'error_message': "You didn't select a choice.",
         })
     else:
+        messages.success(request, "Your vote is succesfull.")
         if not (question.can_vote()):
-            messages.warning(request,"This polls are not allowed.")
-            return HttpResponseRedirect(reverse("polls:index"))
+            messages.warning(request, "This polls are not allowed.")
+        elif Vote.objects.filter(user=request.user, question=question).exists():
+            this_votes = Vote.objects.get(user=request.user, question=question)
+            this_votes.choice = selected_choice
+            this_votes.save()
         else:
-            selected_choice.votes += 1
-            selected_choice.save()
-            return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
+            question.vote_set.create(choice=selected_choice, user=request.user)
+            messages.success(request,"Vote sucessful,thank you for voting. ")
+        return HttpResponseRedirect(reverse('polls:results',args=(question.id,)))

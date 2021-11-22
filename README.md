@@ -10,3 +10,11 @@ Web application for conducting online polls and surveys.
 - [Iteration1](../../wiki/Iteration1)
 - [Iteration2](../../wiki/Iteration2)
 - [Iteration3](../../wiki/Iteration3)
+
+Users provided by the initial data (users.json):
+
+| Username  | Password    |
+|-----------|-------------|
+| demo00     | 110101    |
+| demo1     | pim161200    |
+| demo2     | pim16122000    |
